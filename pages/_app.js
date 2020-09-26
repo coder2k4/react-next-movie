@@ -7,9 +7,18 @@ class MovieApp extends App {
 
     // TODO: execute here getInitialProps and pass this data to your page
 
+    static async getInitialProps(appContext) {
+        const appProp = await App.getInitialProps(appContext)
+
+        return {
+            ...appProp
+        }
+    }
+
+
     render() {
         // Component holds page you are navigating to
-        const { Component } = this.props
+        const { Component, pageProps } = this.props
 
         return (
             <div>
@@ -22,7 +31,7 @@ class MovieApp extends App {
                 </Head>
                 <Navbar />
                 <div className="base-page">
-                    <Component />
+                    <Component {...pageProps} />
                 </div>
                 <Footer />
                 <style jsx>{`
