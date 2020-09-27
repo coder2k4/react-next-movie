@@ -3,7 +3,7 @@ import SideMenu from '../components/sideMenu'
 import Carousel from '../components/carousel'
 import MovieList from '../components/movieList'
 
-import {getCatogoies, getMovies} from '../actions'
+import {getCategories, getMovies} from '../actions'
 
 const Home = (props) => {
 
@@ -34,14 +34,14 @@ const Home = (props) => {
 
 Home.getInitialProps = async () => {
     const movies = await getMovies()
-    const categories = await getCatogoies()
+    const categories = await getCategories()
     const images = movies.map(movie => ({
         id: `image-${movie.id}`,
         url: movie.cover,
         name: movie.name
     }))
 
-    console.log(images)
+    //console.log(images)
 
     return {
         movies, images, categories
