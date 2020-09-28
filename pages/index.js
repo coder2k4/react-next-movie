@@ -5,9 +5,21 @@ import MovieList from '../components/movieList'
 
 import {getCategories, getMovies} from '../actions'
 
+
 const Home = (props) => {
 
     const { images, categories, movies } = props
+
+    const [filter, setFilter] = useState('all')
+
+    const changeCategory = category => setFilter(category)
+
+    const filterMovies = movies => {
+        if (filter==='all')
+            return movies
+
+        return  movies.filter( movie => movie.genre && movie.genre.includes(filter))
+    }
 
     return (
         <div>
@@ -16,13 +28,16 @@ const Home = (props) => {
                     <div className="row">
                         <div className="col-lg-3">
                             <SideMenu
-                                appName={"Movie DB"} categories={categories || []}
+                                changeCategory={changeCategory}
+                                activeCategory={filter}
+                                categories={categories}
+                                appName={"Categories"}
                             />
                         </div>
                         <div className="col-lg-9">
                             <Carousel images={images || []}/>
                             <div className="row">
-                                <MovieList movies={movies || []} />
+                                <MovieList movies={filterMovies(movies) || []} />
                             </div>
                         </div>
                     </div>
@@ -32,21 +47,47 @@ const Home = (props) => {
     )
 }
 
-Home.getInitialProps = async () => {
+export default Home
+
+Home.getInitialProps  = async () => {
     const movies = await getMovies()
     const categories = await getCategories()
     const images = movies.map(movie => ({
         id: `image-${movie.id}`,
         url: movie.cover,
-        name: movie.name
-    }))
-
-    //console.log(images)
+        name: movie.name }))
 
     return {
-        movies, images, categories
+        movies,
+        images,
+        categories
     }
 }
+
+// export async function getServerSideProps() {
+//     //const movies = await getMovies()
+//     const response = await fetch(`http://localhost:3000/api/v1/movies`)
+//     const movies = await response.json()
+//     console.log(movies)
+//     const categories = await getCategories()
+//     const images = movies.map(movie => ({
+//         id: `image-${movie.id}`,
+//         url: movie.cover,
+//         name: movie.name
+//     }))
+//
+//     // Pass data to the page via props
+//     return {
+//         props: {
+//             movies,
+//             images,
+//             categories
+//         }
+//
+//     }
+// }
+
+
 
 // class Home extends React.Component {
 
@@ -128,4 +169,3 @@ Home.getInitialProps = async () => {
 //   }
 // }
 
-export default Home

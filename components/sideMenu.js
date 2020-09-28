@@ -2,21 +2,20 @@ import Modal from "./modal";
 import {createMovie} from "../actions";
 import React from "react";
 import MovieCreateHtmlForm from "./movieCreateForm";
+import {useRouter} from "next/router";
 
 
 const SideMenu = (props) => {
+  const { categories } = props
+  const router = useRouter()
+  let modal = null
 
-    const {categories} = props
-    let modal = null
-
-    const handleCreateMovie = (movie) => {
-
-        createMovie(movie).then((movie)=>{
-            console.log(JSON.stringify(movie))
-            modal.closeModal() // получаем по ref объекта Modal
-        })
-
-    }
+  const handleCreateMovie = (movie) => {
+    createMovie(movie).then((movies) => {
+      modal.closeModal()
+      router.push('/')
+    })
+  }
 
     return (
         <div>
@@ -27,9 +26,9 @@ const SideMenu = (props) => {
             <div className="list-group">
                 { categories.map(c =>
                     <a
+                        onClick={() => props.changeCategory(c.name)}
                         key={c.id}
-                        href="#"
-                        className="list-group-item">{c.name}</a>
+                        className={`list-group-item ${props.activeCategory === c.name ? 'active' : ''}`}>{c.name}</a>
                 )
                 }
             </div>
